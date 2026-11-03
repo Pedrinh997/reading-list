@@ -1,0 +1,63 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: reading
+      POSTGRES_PASSWORD: senha-forte-123
+      POSTGRES_DB: readingdb
+    ports:
+      - "5434:5432"
+    volumes:
+      - readingdb_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reading -d readingdb"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "8001:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://reading:senha-forte-123@db:5432/readingdb
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://reading:senha-forte-123@db:5432/readingdb
+    restart: unless-stopped
+
+volumes:
+  readingdb_data:
+  redisdata:
