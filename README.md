@@ -26,3 +26,5 @@ Bookmarks com enriquecimento assíncrono: API recebe URL, worker extrai o
 ## Status
 
 ![CI](https://github.com/SEU_USUARIO/reading-list/actions/workflows/ci.yml/badge.svg)
+
+Testado em 2026-11-02.
