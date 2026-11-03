@@ -52,3 +52,35 @@
 - Ou: CI/CD (pytest + GitHub Actions)
 - Ou: deploy público (Railway, Render)
 - Ou: parar e aplicar em projeto real
+
+## Sessão 7 — CI/CD com GitHub Actions (concluída em 2026-11-02)
+
+### Feito
+- `git init` + `.gitignore` (.venv excluído)
+- README com badge de CI
+- 4 unit tests (sem Postgres/Redis): health, path params, body validation
+- `pytest tests/ -v` → 4 passed local
+- Repo público no GitHub
+- `.github/workflows/ci.yml`: roda pytest em push/PR na main
+- Testado: commit quebrado → CI vermelho + log visível
+- Testado: fix → CI verde
+- Badge no README atualizado automaticamente
+
+### Aprendi
+- CI roda em ambiente limpo (Ubuntu do GitHub), não no meu PC
+- `pytest` local passando **não** garante CI passando (diferença de ambiente)
+- Workflow dispara em push E PR, filtrando por branch
+- `TestClient` do FastAPI permite testar sem subir servidor HTTP
+- Testes que dependem de Postgres/Redis são integration tests (mais lentos, precisam de infra)
+- Unit tests (lógica pura) rodam em qualquer CI sem infra
+- GitHub Free: Actions ilimitado pra repos públicos
+
+### Estado
+- reading-list com 8 sessões completas (1, 2, 3, A, C, 4, 5, 6, 7)
+- API HTTP + worker + Postgres + Redis + Docker Compose + CI
+- Pronto pra: aplicar em projeto real, ou adicionar deploy (Railway)
+
+### Próximos (opcionais)
+- Deploy público (Railway): 2h, precisa conta
+- Integration tests (com Postgres no CI via `services:`): 1h
+- Aplicar o esqueleto em projeto real
