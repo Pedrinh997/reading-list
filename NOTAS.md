@@ -84,3 +84,22 @@
 - Deploy público (Railway): 2h, precisa conta
 - Integration tests (com Postgres no CI via `services:`): 1h
 - Aplicar o esqueleto em projeto real
+
+## Sessão A — Integration test no CI (concluída em 2026-11-03)
+
+### Feito
+- `pytest.ini` com marker `integration`
+- `tests/conftest.py` com fixture `banco_pronto`
+- `tests/test_integration.py` (skipa local sem RUN_INTEGRATION=1)
+- Workflow com `services: postgres + redis` + health-cmd
+- Local: 4 passed, 1 skipped
+- **CI: 5 passed com Postgres+Redis reais** ✅
+- README de portfólio com diagrama ASCII + "o que aprendi"
+
+### Aprendi
+- CI sem infraestrutura só testa lógica pura
+- `services:` do GitHub Actions sobe containers ao lado do job
+- `health-cmd` previne race (Postgres pronto antes do pytest)
+- Marker `integration` permite skip local, roda no CI
+- Fixture `banco_pronto` cria tabela no CI (não tem init.sql automático)
+- README com "o que aprendi" separa tutorial de projeto
