@@ -18,3 +18,5 @@ com-pool-api.*
 *.save
 docker-compose.yml.save
 1%
+__pycache__/
+*.pyc
