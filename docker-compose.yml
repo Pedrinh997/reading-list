@@ -6,34 +6,41 @@ services:
       POSTGRES_PASSWORD: senha-forte-123
       POSTGRES_DB: readingdb
     ports:
-      - "5434:5432"
+    - 5434:5432
     volumes:
-      - readingdb_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    - readingdb_data:/var/lib/postgresql/data
+    - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U reading -d readingdb"]
+      test:
+      - CMD-SHELL
+      - pg_isready -U reading -d readingdb
       interval: 5s
       timeout: 3s
       retries: 10
-
+    command:
+    - postgres
+    - -c
+    - synchronous_commit=off
   redis:
     image: redis:7-alpine
     ports:
-      - "6380:6379"
+    - 6380:6379
     volumes:
-      - redisdata:/data
+    - redisdata:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test:
+      - CMD
+      - redis-cli
+      - ping
       interval: 5s
       timeout: 3s
       retries: 10
-
   api:
     build:
       context: .
       dockerfile: Dockerfile.api
     ports:
-      - "8001:8000"
+    - 8001:8000
     depends_on:
       db:
         condition: service_healthy
@@ -44,7 +51,14 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
     restart: unless-stopped
-
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -fsS http://localhost:8000/docs >/dev/null || exit 1
+      interval: 3s
+      timeout: 2s
+      retries: 20
+      start_period: 15s
   worker:
     build:
       context: .
@@ -57,7 +71,6 @@ services:
     environment:
       DATABASE_URL: postgresql://reading:senha-forte-123@db:5432/readingdb
     restart: unless-stopped
-
 volumes:
-  readingdb_data:
-  redisdata:
+  readingdb_data: null
+  redisdata: null
