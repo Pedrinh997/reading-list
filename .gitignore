@@ -1,7 +1,20 @@
-.venv/
-__pycache__/
-*.pyc
-*.pyo
-.env
-*.log
-.DS_Store
+# k6 outputs
+baseline*.txt
+baseline*.json
+w2-sync-*.txt
+w2-sync-*.json
+pool-*.txt
+pool-*.json
+workers*.txt
+workers*.json
+redis-fixed.*
+sync-off*.*
+run-X.*
+com-pool-api.*
+
+# backups e lixo
+*.bak
+*.bak2
+*.save
+docker-compose.yml.save
+1%
