@@ -48,3 +48,17 @@ Isso é a arquitetura, não um bug.
 
 4 réplicas reduzem throughput da API (208 vs 267 req/s) por
 pressão de memória em 3.8 GiB. Manter 1 réplica.
+
+## Drain rate do worker (medido)
+
+| workers RQ | drain rate | req/s da API |
+|---|---|---|
+| 1 | 3.0 jobs/s | 267 |
+| 4 | 11.0 jobs/s | 208 (−22%) |
+
+Trade-off: 4 workers custam −59 req/s da API para ganhar
++8 jobs/s de scrape. 1 worker é a escolha correta.
+
+Sob carga 50 VUs: API enfileira ~104 POST/s. Com 1 worker
+drenando 3/s, fila cresce ~101/s. Sustentável para burst,
+não para carga permanente — que é exatamente o caso de uso.
