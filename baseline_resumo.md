@@ -34,3 +34,4 @@ Ganho total vs original: +49% req/s, −36% p95.
 ## Tradeoff do sync=off
 Em crash do host, perde até ~60ms de transações commitadas (WAL buffer).
 Aceitável para reading-list. Inaceitável para dados financeiros.
+d062bfc5d1d33e9e205e3ba6cd5ffa7f47bb11d4
