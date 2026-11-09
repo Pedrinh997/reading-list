@@ -35,3 +35,16 @@ Ganho total vs original: +49% req/s, −36% p95.
 Em crash do host, perde até ~60ms de transações commitadas (WAL buffer).
 Aceitável para reading-list. Inaceitável para dados financeiros.
 d062bfc5d1d33e9e205e3ba6cd5ffa7f47bb11d4
+
+## Worker RQ (nota)
+
+Sob carga de 50 VUs (104 POST/s), o worker com 4 réplicas drena
+~11 jobs/s. Fila cresce a ~93 jobs/s. Não é viável zerar fila em
+tempo real neste host (precisaria ~38 workers).
+
+Comportamento esperado: worker é assíncrono. API responde 201
+imediatamente, scrape acontece em background com fila acumulando.
+Isso é a arquitetura, não um bug.
+
+4 réplicas reduzem throughput da API (208 vs 267 req/s) por
+pressão de memória em 3.8 GiB. Manter 1 réplica.
