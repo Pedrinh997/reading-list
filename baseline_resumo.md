@@ -62,3 +62,38 @@ Trade-off: 4 workers custam −59 req/s da API para ganhar
 Sob carga 50 VUs: API enfileira ~104 POST/s. Com 1 worker
 drenando 3/s, fila cresce ~101/s. Sustentável para burst,
 não para carga permanente — que é exatamente o caso de uso.
+
+---
+
+## Sessão 3 — RAM liberada + escala + nginx + métricas
+
+### Configuração final
+- uvicorn workers: **?** (2/4/6 — decidir pelo resultado da Fase 2)
+- nginx: **?** (sim/não — decidido na Fase 3)
+- /metrics: exposto (instrumentator)
+- monitor_micro: parado durante os testes
+
+### Números finais (3 amostras, saturation 70s)
+- req/s:  ? (final-1/2/3)
+- p95:    ? ms
+- p90:    ? ms
+- error:  0.00%
+
+### Comparação com o baseline anterior
+| etapa | req/s | p95 | delta vs anterior |
+|---|---|---|---|
+| baseline sessão 2 | 271 | 241 ms | referência |
+| + RAM liberada | ? | ? ms | ? |
+| + N workers | ? | ? ms | ? |
+| + nginx | ? | ? ms | ? |
+| + métricas | ? | ? ms | ? |
+
+### Decisões
+- **Workers**: N escolhido porque …
+- **nginx**: mantido/removido porque …
+- **Prometheus**: container incluído/omitido porque …
+
+### O que NÃO foi feito (deixado para o próximo)
+- Multiprocess Prometheus (métricas por worker agregadas)
+- HTTP/2 no nginx (TLS requerido)
+- Migrar scrape do worker RQ para aiohttp (reduz CPU do worker)

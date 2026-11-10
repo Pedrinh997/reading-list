@@ -20,3 +20,14 @@ docker-compose.yml.save
 1%
 __pycache__/
 *.pyc
+
+# artefatos da sessão 3
+pos*.json
+pos*.txt
+final-*.json
+final-*.txt
+Dockerfile.api.bak-*
+api.py.bak-*
+docker-compose.yml.bak-*
+verify.*
+worker-scale.*
