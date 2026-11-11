@@ -34,7 +34,6 @@ Ganho total vs original: +49% req/s, −36% p95.
 ## Tradeoff do sync=off
 Em crash do host, perde até ~60ms de transações commitadas (WAL buffer).
 Aceitável para reading-list. Inaceitável para dados financeiros.
-d062bfc5d1d33e9e205e3ba6cd5ffa7f47bb11d4
 
 ## Worker RQ (nota)
 
@@ -65,35 +64,12 @@ não para carga permanente — que é exatamente o caso de uso.
 
 ---
 
-## Sessão 3 — RAM liberada + escala + nginx + métricas
+## Preparação para próxima fase (commitada, NÃO executada)
 
-### Configuração final
-- uvicorn workers: **?** (2/4/6 — decidir pelo resultado da Fase 2)
-- nginx: **?** (sim/não — decidido na Fase 3)
-- /metrics: exposto (instrumentator)
-- monitor_micro: parado durante os testes
+Os itens abaixo existem no repositório mas **não fazem parte do baseline medido**:
 
-### Números finais (3 amostras, saturation 70s)
-- req/s:  ? (final-1/2/3)
-- p95:    ? ms
-- p90:    ? ms
-- error:  0.00%
+- `nginx.conf` — proxy reverso pronto. Serviço `nginx` no compose. **Não medido sob carga.**
+- `prometheus.yml` — scrape config. Serviço `prometheus` no compose. **Não usado em produção.**
+- `prometheus-fastapi-instrumentator` — `/metrics` exposto no `api.py`. Útil para monitorar mudanças futuras.
 
-### Comparação com o baseline anterior
-| etapa | req/s | p95 | delta vs anterior |
-|---|---|---|---|
-| baseline sessão 2 | 271 | 241 ms | referência |
-| + RAM liberada | ? | ? ms | ? |
-| + N workers | ? | ? ms | ? |
-| + nginx | ? | ? ms | ? |
-| + métricas | ? | ? ms | ? |
-
-### Decisões
-- **Workers**: N escolhido porque …
-- **nginx**: mantido/removido porque …
-- **Prometheus**: container incluído/omitido porque …
-
-### O que NÃO foi feito (deixado para o próximo)
-- Multiprocess Prometheus (métricas por worker agregadas)
-- HTTP/2 no nginx (TLS requerido)
-- Migrar scrape do worker RQ para aiohttp (reduz CPU do worker)
+Esses 3 itens foram adicionados para deixar o projeto pronto para a próxima rodada de otimização (4/6 workers com RAM livre). **O baseline oficial continua sendo 267 req/s / p95 244 ms com 2 workers e sync=off.**

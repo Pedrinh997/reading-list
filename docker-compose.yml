@@ -54,7 +54,8 @@ services:
     healthcheck:
       test:
       - CMD-SHELL
-      - curl -fsS http://localhost:8000/docs >/dev/null || exit 1
+      - python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/docs',
+        timeout=2).status==200 else 1)"
       interval: 3s
       timeout: 2s
       retries: 20

@@ -1,33 +1,41 @@
-# k6 outputs
-baseline*.txt
-baseline*.json
-w2-sync-*.txt
-w2-sync-*.json
-pool-*.txt
-pool-*.json
-workers*.txt
-workers*.json
-redis-fixed.*
-sync-off*.*
-run-X.*
-com-pool-api.*
-
-# backups e lixo
-*.bak
-*.bak2
-*.save
-docker-compose.yml.save
-1%
-__pycache__/
-*.pyc
 
 # artefatos da sessão 3
-pos*.json
-pos*.txt
+# backups e lixo
+# k6 outputs
+*.bak
+*.bak2
+*.pyc
+*.save
+1%
+Dockerfile.api.bak-*
+__pycache__/
+api.py.bak-*
+baseline*.json
+baseline*.txt
+com-pool-api.*
+docker-compose.yml.bak-*
+docker-compose.yml.save
 final-*.json
 final-*.txt
-Dockerfile.api.bak-*
-api.py.bak-*
-docker-compose.yml.bak-*
+pool-*.json
+pool-*.txt
+pos*.json
+pos*.txt
+redis-fixed.*
+relatorio-final.md
+run-X.*
+sync-off*.*
 verify.*
+w2-sync-*.json
+w2-sync-*.txt
 worker-scale.*
+workers*.json
+workers*.txt
+
+# artefatos de diagnóstico (sessão 3)
+estado-atual.txt
+historico-otimizacao.txt
+relatorio-final.md
+verify-final.json
+verify-final.txt
+*.bak-fase*

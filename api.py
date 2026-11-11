@@ -1,5 +1,6 @@
 import psycopg2
 from fastapi import FastAPI, HTTPException
+from prometheus_fastapi_instrumentator import Instrumentator
 from pydantic import BaseModel
 from redis import Redis
 from rq import Queue
@@ -15,6 +16,12 @@ REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = int(os.getenv("REDIS_PORT", "6380"))
 
 app = FastAPI(title="Reading List API")
+
+Instrumentator(
+    should_group_status_codes=True,
+    should_ignore_untemplated=True,
+    excluded_handlers=["/metrics", "/docs", "/openapi.json", "/redoc"],
+).instrument(app).expose(app)
 
 
 class BookmarkIn(BaseModel):
