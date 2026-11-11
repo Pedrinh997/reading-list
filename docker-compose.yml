@@ -72,6 +72,24 @@ services:
     environment:
       DATABASE_URL: postgresql://reading:senha-forte-123@db:5432/readingdb
     restart: unless-stopped
+  nginx:
+    image: nginx:1.27-alpine
+    depends_on:
+    - api
+    ports:
+    - 8003:80
+    volumes:
+    - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+  prometheus:
+    image: prom/prometheus:v2.55.0
+    depends_on:
+    - api
+    ports:
+    - 9091:9090
+    volumes:
+    - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    restart: unless-stopped
 volumes:
   readingdb_data: null
   redisdata: null
