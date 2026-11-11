@@ -73,3 +73,33 @@ Os itens abaixo existem no repositório mas **não fazem parte do baseline medid
 - `prometheus-fastapi-instrumentator` — `/metrics` exposto no `api.py`. Útil para monitorar mudanças futuras.
 
 Esses 3 itens foram adicionados para deixar o projeto pronto para a próxima rodada de otimização (4/6 workers com RAM livre). **O baseline oficial continua sendo 267 req/s / p95 244 ms com 2 workers e sync=off.**
+
+---
+
+## Sessão 3 — Resultado final
+
+### O que foi entregue
+- `api.py` expõe `/metrics` (prometheus-fastapi-instrumentator)
+- `docker-compose.yml` tem `nginx` (8003) e `prometheus` (9091)
+- `nginx.conf` e `prometheus.yml` com config canônica, validados
+- `healthcheck` da API usa Python (curl não existe na imagem slim)
+- `baseline_resumo.md` sem SHA stray, sem template não preenchido
+- `.gitignore` sem duplicatas, com `_auditoria/` ignorado
+
+### 4 checks passando
+| serviço | porta | status |
+|---|---|---|
+| api | 8001 | 200 |
+| metrics | 8001 | 200 |
+| nginx | 8003 | 200 |
+| prometheus | 9091 | 200 (target api UP) |
+
+### Baseline oficial (INALTERADO)
+- **267 req/s, p95 244 ms, 2 workers, sync=off, 0% erro**
+- Configurado em `d062bfc`, verificado em `verify-final.json`
+- Nenhuma mudança de código Python no caminho crítico
+
+### O que ficou para depois
+- Multiprocess Prometheus (métricas agregadas por worker uvicorn)
+- HTTP/2 no nginx (TLS requerido)
+- Escalar uvicorn para 4 workers com `monitor_micro` parado (pode dar 300+ req/s)
