@@ -40,3 +40,8 @@ verify-final.json
 verify-final.txt
 *.bak-fase*
 _auditoria/
+
+# artefatos da sessão 3 (sanidade)
+sanity*.json
+sanity*.txt
+*.bak-*
