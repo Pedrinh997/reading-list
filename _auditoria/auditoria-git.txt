@@ -1,0 +1,64 @@
+=== git diff 1cb1952..HEAD (o que o plano entregou) ===
+ .gitignore         | 11 +++++++++++
+ Dockerfile.api     |  2 +-
+ baseline_resumo.md | 35 +++++++++++++++++++++++++++++++++++
+ nginx.conf         | 30 ++++++++++++++++++++++++++++++
+ prometheus.yml     |  9 +++++++++
+ 5 files changed, 86 insertions(+), 1 deletion(-)
+
+=== histórico recente ===
+e277fbb perf: escala de workers + nginx + métricas Prometheus (ver baseline_resumo.md)
+1cb1952 chore: commit scripts de carga k6
+d08a170 chore: ignore __pycache__
+a114805 docs: drain rate do worker com 1 e 4 réplicas
+53bfb2a docs: nota sobre comportamento do worker RQ sob carga
+69e81c4 chore: gitignore artefatos de teste k6
+
+=== mudanças em api.py ===
+
+=== docker-compose.yml: linhas adicionadas ===
+
+=== baseline_resumo.md: diff resumido ===
+diff --git a/baseline_resumo.md b/baseline_resumo.md
+index 7f149d0..3ac25d6 100644
+--- a/baseline_resumo.md
++++ b/baseline_resumo.md
+@@ -62,3 +62,38 @@ Trade-off: 4 workers custam −59 req/s da API para ganhar
+ Sob carga 50 VUs: API enfileira ~104 POST/s. Com 1 worker
+ drenando 3/s, fila cresce ~101/s. Sustentável para burst,
+ não para carga permanente — que é exatamente o caso de uso.
++
++---
++
++## Sessão 3 — RAM liberada + escala + nginx + métricas
++
++### Configuração final
++- uvicorn workers: **?** (2/4/6 — decidir pelo resultado da Fase 2)
++- nginx: **?** (sim/não — decidido na Fase 3)
++- /metrics: exposto (instrumentator)
++- monitor_micro: parado durante os testes
++
++### Números finais (3 amostras, saturation 70s)
++- req/s:  ? (final-1/2/3)
++- p95:    ? ms
++- p90:    ? ms
++- error:  0.00%
++
++### Comparação com o baseline anterior
++| etapa | req/s | p95 | delta vs anterior |
++|---|---|---|---|
++| baseline sessão 2 | 271 | 241 ms | referência |
++| + RAM liberada | ? | ? ms | ? |
++| + N workers | ? | ? ms | ? |
++| + nginx | ? | ? ms | ? |
++| + métricas | ? | ? ms | ? |
++
++### Decisões
++- **Workers**: N escolhido porque …
++- **nginx**: mantido/removido porque …
++- **Prometheus**: container incluído/omitido porque …
++
++### O que NÃO foi feito (deixado para o próximo)
++- Multiprocess Prometheus (métricas por worker agregadas)
++- HTTP/2 no nginx (TLS requerido)
++- Migrar scrape do worker RQ para aiohttp (reduz CPU do worker)
