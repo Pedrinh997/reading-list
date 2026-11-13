@@ -104,9 +104,23 @@ Esses 3 itens foram adicionados para deixar o projeto pronto para a próxima rod
 - HTTP/2 no nginx (TLS requerido)
 - Escalar uvicorn para 4 workers com `monitor_micro` parado (pode dar 300+ req/s)
 
-## Nota pós-tutorial plog — modelo de fsync
+## Nota pós-tutorial plog — modelo de fsync (RESOLVIDA)
 
-Experimento em /tmp (test_fsync.py): fsync custo ~0ms.
-Diagnóstico: /tmp provavelmente é tmpfs (RAM), então fsync foi no-op.
-O ganho de +13% com synchronous_commit=off pode vir não do fsync de disco,
-mas da coordenação de WAL (lock entre backends). Fica como dúvida em aberto.
+Medido em ext4/WSL (fora de /tmp, que é tmpfs):
+- fsync: 68.89 ms por write
+- sem fsync: 0.1 ms por write
+- custo: ~38.000x
+
+O ganho de +13% com synchronous_commit=off NÃO vem de eliminar
+um fsync por commit (o Postgres usa group commit e amortiza 15-20
+commits por fsync). Vem de eliminar a ESPERA pela coordenação
+de group commit — o backend deixa de aguardar o WAL writer alinhar
+seu commit com o próximo fsync agendado.
+
+Isso explica por que o ganho foi concentrado em p95 (-23%), não em
+média: os commits que caem pouco antes de um fsync agendado esperam
+quase o fsync inteiro (~68ms), inflando a cauda.
+
+Trade-off (inalterado): em crash de host, perde transações commitadas
+que ainda não chegaram ao disco via group commit. Janela típica
+~alguns ms a ~200ms dependendo da carga.
