@@ -103,3 +103,10 @@ Esses 3 itens foram adicionados para deixar o projeto pronto para a próxima rod
 - Multiprocess Prometheus (métricas agregadas por worker uvicorn)
 - HTTP/2 no nginx (TLS requerido)
 - Escalar uvicorn para 4 workers com `monitor_micro` parado (pode dar 300+ req/s)
+
+## Nota pós-tutorial plog — modelo de fsync
+
+Experimento em /tmp (test_fsync.py): fsync custo ~0ms.
+Diagnóstico: /tmp provavelmente é tmpfs (RAM), então fsync foi no-op.
+O ganho de +13% com synchronous_commit=off pode vir não do fsync de disco,
+mas da coordenação de WAL (lock entre backends). Fica como dúvida em aberto.
